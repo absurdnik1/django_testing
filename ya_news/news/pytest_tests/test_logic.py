@@ -18,14 +18,14 @@ COMMENT_TEXT = 'Just text'
 @pytest.mark.django_db(True)
 def test_anonymous_user_cant_create_comment(client, news, form_data):
     url = reverse('news:detail', args=(news.pk,))
-    response = client.post(url, data=form_data)
+    client.post(url, data=form_data)
     comments_count = Comment.objects.count()
     assert comments_count == 0
 
 
 def test_user_can_create_comment(author_client, news, author, form_data):
     url = reverse('news:detail', args=(news.pk,))
-    response = author_client.post(url, data=form_data)
+    author_client.post(url, data=form_data)
     comments_count = Comment.objects.count()
     assert comments_count == 1
     comment_for_check = Comment.objects.get()
@@ -79,6 +79,6 @@ def test_user_cant_edit_comment_of_another_user(admin_client, news, author):
 
 def test_user_cant_delete_comment_of_another_user(admin_client, comment):
     url = reverse('news:delete', args=(comment.id,))
-    response = admin_client.delete(url)
+    admin_client.delete(url)
     comments_count = Comment.objects.count()
     assert comments_count == 1
