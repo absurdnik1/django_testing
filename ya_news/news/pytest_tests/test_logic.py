@@ -12,7 +12,7 @@ from news.forms import BAD_WORDS, WARNING
 
 User = get_user_model()
 NEW_COMMENT_TEXT = 'Обновлённый комментарий'
-COMMENT_TEXT = 'Just text'
+COMMENT_TEXT = 'text'
 
 
 @pytest.mark.django_db(True)
@@ -64,10 +64,7 @@ def test_author_can_edit_comment(author_client, form_data, news, comment):
     assert comment.text == NEW_COMMENT_TEXT
 
 
-def test_user_cant_edit_comment_of_another_user(admin_client, news, author):
-    comment = Comment.objects.create(
-        news=news, author=author, text=COMMENT_TEXT,
-    )
+def test_user_cant_edit_comment_of_another_user(admin_client, comment):
     edit_url = reverse('news:edit', args=(comment.id,))
     form_data = {'text': NEW_COMMENT_TEXT}
 

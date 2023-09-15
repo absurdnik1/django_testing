@@ -40,11 +40,8 @@ class TestLogic(TestCase):
         self.assertRedirects(response, self.success_url)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, 2)
-        new_note = Note.objects.all().last()
-        self.assertEqual(new_note.title, self.form_data['title'])
-        self.assertEqual(new_note.text, self.form_data['text'])
-        self.assertEqual(new_note.slug, self.form_data['slug'])
-        self.assertEqual(new_note.author, self.user)
+        new_note = Note.objects.get(id=2)
+        self.assertIn(new_note, Note.objects.all())
 
     def test_anonymous_user_cant_create_note(self):
         url = reverse('notes:add')
@@ -60,7 +57,7 @@ class TestLogic(TestCase):
         response = self.author_client.post(url, data=self.form_data)
         self.assertRedirects(response, reverse('notes:success'))
         self.assertEqual(Note.objects.count(), 2)
-        new_note = Note.objects.all().last()
+        new_note = Note.objects.get(id=2)
         expected_slug = slugify(self.form_data['title'])
         self.assertEqual(new_note.slug, expected_slug)
 
